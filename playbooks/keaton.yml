@@ -1,0 +1,7 @@
+---
+- name: Keaton setup
+  hosts:
+    - keaton
+  remote_user: root
+  roles:
+    - keaton-base
