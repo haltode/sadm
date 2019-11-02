@@ -13,3 +13,14 @@
       - sudo
       - vim
     update_cache: yes
+
+- name: Add haltode user
+  user:
+    name: haltode
+    comment: Thibault Allançon
+    shell: /bin/fish
+    group: haltode
+    groups:
+      - haltode
+      - users
+      - sudo
