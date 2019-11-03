@@ -1,0 +1,76 @@
+---
+- name: Install website related packages
+  apt:
+    name:
+      - certbot
+      - fail2ban
+      - nginx
+      - python3-certbot-nginx
+
+- name: Enable fail2ban
+  systemd:
+    name: fail2ban.service
+    state: started
+    daemon_reload: True
+    enabled: True
+
+- name: Setup Let's Encrypt certificate
+  shell: |
+    certbot certonly              \
+    --non-interactive             \
+    --nginx                       \
+    --agree-tos                   \
+    --email {{ cert_email }}      \
+    --cert-name {{ cert_name }}   \
+    {% for site in cert_sites %}
+    -d {{ site }}                 \
+    {% endfor %}
+
+# By default, certbot renewal does not reload nginx
+- name: Create certbot post-renewal hook directory
+  file:
+    path: "/etc/letsencrypt/renewal-hooks/post/"
+    state: directory
+    recurse: True
+
+- name: Create certbot post-renewal hook to reload nginx
+  copy:
+    content: |
+      #!/bin/sh
+      systemctl reload nginx
+    dest: "/etc/letsencrypt/renewal-hooks/post/reload-nginx.sh"
+    mode: +x
+
+- name: Enable certbot.timer
+  systemd:
+    name: certbot.timer
+    daemon_reload: True
+    enabled: True
+
+- name: Create nginx directories
+  file:
+    path: "/etc/nginx/{{ item.path }}"
+    state: directory
+  with_filetree: nginx/
+  when: item.state == 'directory'
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Copy nginx template files
+  template:
+    src: '{{ item.src }}'
+    dest: "/etc/nginx/{{ item.path }}"
+  with_filetree: nginx/
+  when: item.state == 'file'
+  loop_control:
+    label: "{{ item.path }}"
+  notify: reload nginx
+
+- name: Link nginx enabled sites
+  file:
+    src: "../sites-available/{{ item | basename }}"
+    dest: "/etc/nginx/sites-enabled/{{ item | basename }}"
+    state: link
+  with_fileglob:
+    - nginx/sites-enabled/*
+  notify: reload nginx
