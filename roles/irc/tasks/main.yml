@@ -1,0 +1,7 @@
+---
+- name: Install IRC related packages
+  apt:
+    name:
+      - tmux
+      - weechat
+    state: present
