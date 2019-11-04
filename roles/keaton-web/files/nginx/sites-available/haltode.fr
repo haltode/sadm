@@ -1,0 +1,18 @@
+server {
+    include https_config;
+    server_name www.haltode.fr;
+    return 301 $scheme://haltode.fr$request_uri;
+}
+
+server {
+    include https_config;
+    server_name haltode.fr;
+
+    index index.html;
+    root /home/haltode/www/haltode.fr/html;
+
+    # First attempt to serve request as file, then as directory, then 404
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

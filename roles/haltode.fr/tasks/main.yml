@@ -1,0 +1,11 @@
+---
+- name: Install haltode.fr necessary packages
+  apt:
+    name:
+      - build-essential
+      - pandoc
+    state: present
+
+- import_tasks: haltode_fr.yml
+  become: true
+  become_user: haltode

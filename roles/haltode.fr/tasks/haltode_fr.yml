@@ -1,0 +1,32 @@
+---
+- name: Create haltode.fr directory
+  file:
+    name: "{{ haltode_fr_dir }}"
+    state: directory
+
+- name: Clone haltode.fr git repository
+  git:
+    repo: 'https://github.com/haltode/haltode.fr.git'
+    dest: "{{ haltode_fr_dir }}"
+    update: yes
+    version: master
+
+- name: Create haltode.fr virtualenv
+  pip:
+    name: pip
+    virtualenv: "{{ haltode_fr_venv }}"
+    virtualenv_command: /usr/bin/env python3 -m venv
+
+- name: Setup haltode.fr virtualenv
+  pip:
+    requirements: "{{ haltode_fr_dir }}/requirements.txt"
+    virtualenv: "{{ haltode_fr_venv }}"
+    virtualenv_command: python3 -m venv
+
+- name: Build haltode.fr website
+  shell: |
+    source "{{ haltode_fr_venv }}/bin/activate"
+    make -C "{{ haltode_fr_dir }}" build
+    make -C "{{ haltode_fr_dir }}" collectstatic
+  args:
+    executable: /bin/bash

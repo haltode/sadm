@@ -1,0 +1,2 @@
+haltode_fr_dir: /home/haltode/www/haltode.fr
+haltode_fr_venv: "{{ haltode_fr_dir }}/venv"
