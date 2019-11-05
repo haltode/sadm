@@ -58,7 +58,7 @@
 
 - name: Copy nginx template files
   template:
-    src: '{{ item.src }}'
+    src: "{{ item.src }}"
     dest: "/etc/nginx/{{ item.path }}"
   with_filetree: nginx/
   when: item.state == 'file'
@@ -74,3 +74,14 @@
   with_fileglob:
     - nginx/sites-enabled/*
   notify: reload nginx
+
+- name: Create htpasswd directory
+  file:
+    path: "/etc/nginx/htpasswd"
+    state: directory
+
+- name: Copy htpasswd secret file
+  copy:
+    dest: "/etc/nginx/htpasswd/{{ item.name }}"
+    content: "{{ item.password }}"
+  with_items: "{{ htpasswd }}"

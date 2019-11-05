@@ -1,0 +1,18 @@
+server {
+    include https_config;
+    server_name torrent.haltode.fr;
+
+    location / {
+        auth_basic "J'aime pas trop les spammeurs et les fils de pute";
+        auth_basic_user_file /etc/nginx/htpasswd/haltode;
+
+        client_max_body_size 10m;
+
+        autoindex on;
+        proxy_pass http://localhost:9091;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass_header X-Transmission-Session-Id;
+    }
+}

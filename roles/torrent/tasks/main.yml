@@ -1,0 +1,20 @@
+---
+- name: Install transmission
+  apt:
+    name:
+      - transmission-daemon
+    state: present
+
+- name: Update transmission config file
+  template:
+    src: 'settings.json'
+    dest: '/etc/transmission-daemon/settings.json'
+  notify: reload transmission
+
+- name: Setup transmission download directory
+  shell: |
+    mkdir -p {{ torrent_download_dir }}
+    chown -R haltode:debian-transmission {{ torrent_download_dir }}
+    chmod -R 775 {{ torrent_download_dir }}
+  args:
+    warn: no
