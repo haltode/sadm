@@ -1,0 +1,2 @@
+auth_basic "J'aime pas trop les spammeurs et les fils de pute";
+auth_basic_user_file /etc/nginx/htpasswd/haltode;

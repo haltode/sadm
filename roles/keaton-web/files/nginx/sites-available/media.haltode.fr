@@ -1,0 +1,8 @@
+server {
+    include https_config;
+    server_name media.haltode.fr;
+
+    location / {
+        proxy_pass http://localhost:8096;
+    }
+}

@@ -3,8 +3,7 @@ server {
     server_name torrent.haltode.fr;
 
     location / {
-        auth_basic "J'aime pas trop les spammeurs et les fils de pute";
-        auth_basic_user_file /etc/nginx/htpasswd/haltode;
+        include auth_haltode;
 
         client_max_body_size 10m;
 
