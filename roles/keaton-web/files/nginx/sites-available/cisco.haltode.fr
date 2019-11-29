@@ -1,0 +1,19 @@
+server {
+    include https_config;
+    server_name www.cisco.haltode.fr;
+    return 301 $scheme://cisco.haltode.fr$request_uri;
+}
+
+server {
+    include https_config;
+    server_name cisco.haltode.fr;
+
+    location / {
+        proxy_pass http://127.0.0.1:8042;
+        include proxy_params;
+    }
+
+    location /static/ {
+        alias /home/haltode/www/cisco.haltode.fr/static/;
+    }
+}
