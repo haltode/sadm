@@ -1,0 +1,6 @@
+dj_dir: /home/haltode/www/cisco.haltode.fr
+dj_venv: "{{ dj_dir }}/venv"
+dj_static_dir: "{{ dj_dir }}/static"
+dj_settings_dir: "{{ dj_dir }}/cisco/settings"
+dj_django_wsgi: cisco.wsgi:application
+dj_django_settings: cisco.settings.dev

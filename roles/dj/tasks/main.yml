@@ -1,0 +1,11 @@
+---
+- name: Copy systemd service
+  template:
+    src: dj.service
+    dest: /etc/systemd/system/dj.service
+    mode: '0640'
+  notify: dj restart
+
+- import_tasks: dj.yml
+  become: true
+  become_user: haltode

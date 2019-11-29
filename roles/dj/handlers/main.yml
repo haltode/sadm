@@ -1,0 +1,7 @@
+- name: Restart dj gunicorn
+  listen: dj restart
+  systemd:
+    name: dj.service
+    daemon_reload: True
+    enabled: True
+    state: restarted

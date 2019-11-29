@@ -1,0 +1,12 @@
+[Unit]
+Description=dj-ango radio website
+
+[Service]
+User=haltode
+Group=haltode
+WorkingDirectory={{ dj_dir }}
+Environment=DJANGO_SETTINGS_MODULE={{ dj_django_settings }}
+ExecStart={{ dj_venv }}/bin/gunicorn -b 127.0.0.1:8042 -w 4 {{ dj_django_wsgi }}
+
+[Install]
+WantedBy=multi-user.target

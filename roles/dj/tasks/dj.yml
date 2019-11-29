@@ -1,0 +1,56 @@
+---
+- name: Create directory
+  file:
+    name: "{{ dj_dir }}"
+    state: directory
+
+- name: Clone git repository
+  git:
+    repo: 'https://github.com/haltode/dj-ango.git'
+    dest: "{{ dj_dir }}"
+    update: yes
+    version: master
+
+- name: Create virtualenv
+  pip:
+    name:
+      - pip
+      - wheel
+      - gunicorn
+    virtualenv: "{{ dj_venv }}"
+    virtualenv_command: /usr/bin/env python3 -m venv
+  notify: dj restart
+
+- name: Setup virtualenv
+  pip:
+    requirements: "{{ dj_dir }}/requirements.txt"
+    virtualenv: "{{ dj_venv }}"
+    virtualenv_command: python3 -m venv
+  notify: dj restart
+
+- name: Configure Django settings
+  template:
+    src: dev.py
+    dest: "{{ dj_settings_dir }}/dev.py"
+  notify: dj restart
+
+- name: Create database
+  postgresql_db:
+    login_user: haltode
+    name: cisco
+  notify: dj restart
+
+- name: Apply database migrations
+  django_manage:
+    command: migrate
+    app_path: "{{ dj_dir }}"
+    settings: "{{ dj_django_settings }}"
+    virtualenv: "{{ dj_venv }}"
+  notify: dj restart
+
+- name: Collect static files
+  django_manage:
+    command: collectstatic
+    app_path: "{{ dj_dir }}"
+    settings: "{{ dj_django_settings }}"
+    virtualenv: "{{ dj_venv }}"

@@ -1,0 +1,7 @@
+---
+- name: DJ deployment
+  hosts:
+    - keaton
+  remote_user: root
+  roles:
+    - dj
