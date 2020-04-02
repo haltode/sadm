@@ -1,0 +1,14 @@
+server {
+    include https_config;
+    server_name compta.haltode.fr;
+
+    location / {
+        include auth_haltode;
+
+        proxy_pass http://localhost:8051;
+
+        # Recommended in Firefly documentation
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
