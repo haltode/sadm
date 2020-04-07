@@ -10,4 +10,9 @@ server {
 
     index index.html;
     root /home/haltode/www/haltode.fr/html;
+
+    location /private {
+        autoindex on;
+        include auth_haltode;
+    }
 }
