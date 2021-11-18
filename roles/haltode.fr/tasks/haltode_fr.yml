@@ -9,7 +9,7 @@
     repo: 'https://github.com/haltode/haltode.fr.git'
     dest: "{{ haltode_fr_dir }}"
     update: yes
-    version: master
+    version: main
 
 - name: Create haltode.fr virtualenv
   pip:
