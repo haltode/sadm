@@ -18,15 +18,20 @@
     virtualenv_command: /usr/bin/env python3 -m venv
 
 - name: Setup haltode.fr virtualenv
-  pip:
-    requirements: "{{ haltode_fr_dir }}/requirements.txt"
-    virtualenv: "{{ haltode_fr_venv }}"
-    virtualenv_command: python3 -m venv
+  shell: |
+    # Necessary manual steps to use the pyproject.toml setup file
+    source "{{ haltode_fr_venv }}/bin/activate"
+    python -m pip install --upgrade pip
+    python -m pip install .
+  args:
+    executable: /bin/bash
+    chdir: "{{ haltode_fr_dir }}"
 
 - name: Build haltode.fr website
   shell: |
     source "{{ haltode_fr_venv }}/bin/activate"
-    make -C "{{ haltode_fr_dir }}" build
-    make -C "{{ haltode_fr_dir }}" collectstatic
+    make build
+    make collectstatic
   args:
     executable: /bin/bash
+    chdir: "{{ haltode_fr_dir }}"
